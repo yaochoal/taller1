@@ -10,15 +10,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Scanner;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -28,11 +26,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Taller {
     public static int tamaño = 1000;
-    public static ArrayList<String> Campos = new ArrayList<String>(); 
-    public static ArrayList<Columna> Columnas = new ArrayList<Columna>();
+    public static ArrayList<Campo> Campos = new ArrayList<>(); 
+    public static ArrayList<Columna> Columnas = new ArrayList<>();
     public static String[][] Matriz = new String[tamaño][tamaño];
     
-    public static void gemerarLexer(){
+    public static void generarLexer(){
         String ruta = "src/taller/Lexer.flex";
         File archivo = new File(ruta);
         jflex.Main.generate(archivo);
@@ -78,25 +76,28 @@ public class Taller {
          }
          libro.close();
     }
+    
     public static void buscarCamposEnTabla() throws FileNotFoundException, IOException{
-        Boolean Coinciden = true;
         for (int i = 0; i < Campos.size(); i++) {
             for (int j = 0; j < tamaño; j++) {
                 for (int k = 0; k < tamaño; k++) {
-                    if(Campos.get(i).equalsIgnoreCase(Matriz[j][k])){
+                    if(Campos.get(i).Nombre.equalsIgnoreCase(Matriz[j][k])){
                        //System.out.println("Coinciden: "+ Campos.get(i)+" y "+ Matriz[j][k]);
                        //System.out.println("Campo: "+i+" Indice: "+ j+" "+k); 
-                        Columna columna = new Columna(Campos.get(i),j,k);
+                        Campos.get(i).Encontrado = true;
+                        Columna columna = new Columna(Campos.get(i).Nombre,j,k);
                         Columnas.add(columna);
                     }
+                    //System.out.println(Levenshtein(Campos.get(i),Matriz[j][k]));;
                 }
             }
         }
     }
+    
     public static boolean verificarCampos(int j){
         boolean campos =true;
-        for (int i = 0; i < Columnas.size(); i++) {
-            campos=campos&&(Matriz[Columnas.get(i).columna][Columnas.get(i).fila+j] != null);      
+        for (Columna Columna : Columnas) {
+            campos = campos && (Matriz[Columna.columna][Columna.fila + j] != null);      
         }
         return campos;
     }
@@ -115,19 +116,19 @@ public class Taller {
                 for (int j = 0; j < Columnas.size(); j++) {
                     line=line.replaceAll(Columnas.get(j).nombre, Matriz[Columnas.get(j).columna][Columnas.get(j).fila+i]);
                 }
-                System.out.println(line);
+                //System.out.println(line);
                 bufferEscribir.write(line+"\n");
        }   
        
         bufferEscribir.close();
-        bufferLeer.close(); 
+        bufferLeer.close();
        }
+       System.out.println("Documentos generados exitosamente");
     }
     
-    
-    public static void main(String[] args) throws FileNotFoundException, IOException {
+    public static void iniciarPrograma() throws FileNotFoundException, IOException{
         String rutaarchivo = "src/input_file/plantilla.txt";
-        //gemerarLexer();
+        //generarLexer();
         FileReader fileReader = new FileReader(rutaarchivo);
         Reader lector = new BufferedReader( new FileReader(rutaarchivo));
         StringBuilder sb = new StringBuilder();
@@ -139,6 +140,7 @@ public class Taller {
                     //resultado += "FIN";
                     pasarExcelAMatriz();
                     buscarCamposEnTabla();
+                    buscarCamposFaltantes();
                     generarMails();
                     //System.out.println(resultado);
                     return;
@@ -147,7 +149,8 @@ public class Taller {
                     case Reservadas: case Campo:
                         //System.out.println(lexer.lexeme);
                         String campo = lexer.lexeme.replaceAll("<|>", "");
-                        Campos.add(campo);
+                        Campo campoObj = new Campo(campo);
+                        Campos.add(campoObj);
                         //resultado += "Campo: "+ lexer.lexeme+ " Encontrado\n";
                         //resultado += lexer.lexeme +": Es un "+ tokens + "\n";
                         break;
@@ -156,11 +159,54 @@ public class Taller {
                         break;
                 }
             }
-        
     }
-    
+    public static void main(String[] args) throws IOException{
+        iniciarPrograma();
+    }
+    public static void buscarCamposFaltantes(){
+        for (int i = 0; i < Campos.size(); i++) {
+            if(Campos.get(i).Encontrado==false){
+                System.out.println("Campo: "+Campos.get(i).Nombre+" No encontrado");
+                 int Nearest = 100;
+                 String PalabraA  = Campos.get(i).Nombre.toUpperCase();
+                 String PalabraB;
+                 String Candidata = "";
+                 int IndiceJ = 0;
+                 int IndiceK = 0;
+                 for (int j = 0; j < tamaño; j++) {
+                     for (int k = 0; k < tamaño; k++) {
+                        if(Matriz[j][k]!=null){
+                        PalabraB = Matriz[j][k].toUpperCase();
+                        int distancia = Levenshtein(PalabraA, PalabraB);
+                            if (distancia < Nearest) {
+                                Nearest = distancia;
+                                Candidata = Matriz[j][k];
+                                IndiceJ= j;
+                                IndiceK= k;
+                            }
+                        }
+                     }
+                }
+                System.out.println("El campo candidato para el token en la plantilla: <<" + Campos.get(i).Nombre + ">> del excel es: " + Candidata);  
+                System.out.println("¿Desea que este reemplaze al campo faltante?\nDigite: Si/No"); 
+                Scanner in = new Scanner(System.in);
+                String s = in.nextLine();
+                if(s.equalsIgnoreCase("Si")){
+                    Matriz[IndiceJ][IndiceK]=Campos.get(i).Nombre;
+                    Columna columna = new Columna(Campos.get(i).Nombre,IndiceJ,IndiceK);
+                    Columnas.add(columna);
+                    System.out.println("Campo Reemplazado");
+                }
+            }
+        }
+    }
     public static int Levenshtein(String PalabraA, String PalabraB){
-        
+        if(PalabraA==null){
+           PalabraA="";
+        }
+        if(PalabraB==null){
+           PalabraB="";
+        }
         int size_x = PalabraA.length() + 1;
         int size_y = PalabraB.length() + 1;
         int[][] distances = new int[size_x][size_y];
