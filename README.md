@@ -28,10 +28,10 @@ Java 1.8 o superior.
 ## Desarrollo
 
 ### 1. Uso de JFlex:
-Se utililizo JFlex para el reconocimiento de los campos de la plantilla y a partir del Token definido Campo con la estructura << Campo >> por ejemplo << Nombre >> una vez almacenado en un Array de Campos se busca el campo en el excel.
-### 2. Busqueda en el Excel:
-Se utilizo la libreria Apache POI para abrir un documento de Excel.xlsx del cual se busca en cada uno de las celdas los Campos identificados por el Analizador Lexico y sus respectivos datos.
+Se utilizó  JFlex para el reconocimiento de los campos de la plantilla y a partir del Token definido Campo con la estructura << Campo >> por ejemplo << Nombre >> una vez almacenado en un Array de Campos se busca el campo en el Excel.
+### 2. Búsqueda  en el Excel:
+Se utilizo la librería Apache POI para abrir un documento de Excel.xlsx del cual se busca en cada uno de las celdas los Campos identificados por el Analizador Léxico y sus respectivos datos.
 ### 3. Generación de documentos:
 Se utilizo las funciones nativas de Java para a partir de la plantilla original crear mas documentos de formato Texto.txt reemplazando los Campos con los respectivos datos encontrados en el Excel.
 ### 3. Reporte de errores en plantilla:
-Se hace un control de los Campos encontrados en el Excel con una variable boleana la cual detecta si se encontraron todos los campos en el Excel donde de lo contrario reporta al usuario de este hecho y procede a buscar el Campo mas similar calculando la distancia de Levenshtein y dando opción al usuario de elegir si cambiar o no el Campo no encontrado por el encontrado.
+Se hace un control de los Campos encontrados en el Excel con una variable booleana la cual detecta si se encontraron todos los campos en el Excel donde de lo contrario reporta al usuario de este hecho y procede a buscar el Campo más similar calculando la distancia de Levenshtein y dando opción al usuario de elegir si cambiar o no el Campo no encontrado por el encontrado.
