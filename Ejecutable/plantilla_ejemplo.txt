@@ -1,9 +1,10 @@
-Señor
+﻿Señor
 
 
-<<Nombre>> <<Apellido>> EDAD <<Edad>>
+<<Nombre>> <<Apellido>> 
+Con edad: <<Edad>>
 
 
-La herramienta (de desarrollarse como comando) puede lucir de la siguiente manera:
+Este es un ejemplo de la carta para enviar por correo la cual sera replicada dependiendo de los datos del Excel.
 
 
