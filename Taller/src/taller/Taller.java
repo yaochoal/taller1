@@ -160,9 +160,7 @@ public class Taller {
                 }
             }
     }
-    public static void main(String[] args) throws IOException{
-        iniciarPrograma();
-    }
+    
     public static void buscarCamposFaltantes(){
         for (int i = 0; i < Campos.size(); i++) {
             if(Campos.get(i).Encontrado==false){
@@ -229,6 +227,11 @@ public class Taller {
         }
         
         return (distances[size_x - 1][size_y - 1]);        
+    }
+    
+    
+    public static void main(String[] args) throws IOException{
+        iniciarPrograma();
     }
     
 }
