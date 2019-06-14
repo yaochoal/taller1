@@ -1,0 +1,9 @@
+Señor
+
+
+carlos luque EDAD 27.0
+
+
+La herramienta (de desarrollarse como comando) puede lucir de la siguiente manera:
+
+

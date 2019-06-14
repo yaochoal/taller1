@@ -1,0 +1,9 @@
+Señor
+
+
+valentina ramos EDAD 26.0
+
+
+La herramienta (de desarrollarse como comando) puede lucir de la siguiente manera:
+
+

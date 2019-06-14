@@ -6,11 +6,16 @@
 package taller;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,8 +27,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 public class Taller {
+    public static int tamaño = 1000;
     public static ArrayList<String> Campos = new ArrayList<String>(); 
-    public static String[][] Matriz = new String[100][100];
+    public static ArrayList<Columna> Columnas = new ArrayList<Columna>();
+    public static String[][] Matriz = new String[tamaño][tamaño];
     
     public static void gemerarLexer(){
         String ruta = "src/taller/Lexer.flex";
@@ -31,8 +38,8 @@ public class Taller {
         jflex.Main.generate(archivo);
     }
     
-    public static void generarMatriz() throws FileNotFoundException, IOException{
-        File file = new File("src/taller/Tabla.xlsx"); 
+    public static void pasarExcelAMatriz() throws FileNotFoundException, IOException{
+        File file = new File("src/input_file/Tabla.xlsx"); 
          FileInputStream fip = new FileInputStream(file); 
          XSSFWorkbook libro = new XSSFWorkbook(fip); 
          XSSFSheet hoja = libro.getSheetAt(0);
@@ -71,19 +78,53 @@ public class Taller {
          }
          libro.close();
     }
-    public static void buscarCamposTabla() throws FileNotFoundException, IOException{
-        generarMatriz();
+    public static void buscarCamposEnTabla() throws FileNotFoundException, IOException{
         Boolean Coinciden = true;
         for (int i = 0; i < Campos.size(); i++) {
-            if(Campos.get(i).equalsIgnoreCase(Matriz[i][0])){
-                System.out.println("Coinciden");
+            for (int j = 0; j < tamaño; j++) {
+                for (int k = 0; k < tamaño; k++) {
+                    if(Campos.get(i).equalsIgnoreCase(Matriz[j][k])){
+                       //System.out.println("Coinciden: "+ Campos.get(i)+" y "+ Matriz[j][k]);
+                       //System.out.println("Campo: "+i+" Indice: "+ j+" "+k); 
+                        Columna columna = new Columna(Campos.get(i),j,k);
+                        Columnas.add(columna);
+                    }
+                }
             }
-            
         }
     }
+    
+    public static void generarMails() throws IOException{
+       
+       for (int i = 1; Matriz[Columnas.get(0).columna][Columnas.get(0).fila+i] != null; i++) {
+       File original = new File("src/input_file/plantilla.txt");
+       File copiado = new File("src/output_file/"+i+".txt");
+       FileWriter archivoEscribir = new FileWriter(copiado);
+       FileReader archivoLeer = new FileReader(original);
+       BufferedWriter bufferEscribir =  new BufferedWriter(archivoEscribir);
+       BufferedReader bufferLeer = new BufferedReader(archivoLeer);
+       String line = null;
+       while((line = bufferLeer.readLine()) != null) {
+                line=line.replaceAll("<|>", "");
+                for (int j = 0; j < Columnas.size(); j++) {
+                    line=line.replaceAll(Columnas.get(j).nombre, Matriz[Columnas.get(j).columna][Columnas.get(j).fila+i]);
+                }
+                //System.out.println(line);
+                bufferEscribir.write(line+"\n");
+       }   
+       
+        bufferEscribir.close();
+        bufferLeer.close(); 
+       }
+      
+        
+        
+    }
+    
+    
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        String rutaarchivo = "src/taller/plantilla.txt";
-        gemerarLexer();
+        String rutaarchivo = "src/input_file/plantilla.txt";
+        //gemerarLexer();
         FileReader fileReader = new FileReader(rutaarchivo);
         Reader lector = new BufferedReader( new FileReader(rutaarchivo));
         StringBuilder sb = new StringBuilder();
@@ -93,8 +134,10 @@ public class Taller {
                 Tokens tokens = lexer.yylex();
                 if (tokens == null) {
                     //resultado += "FIN";
-                    buscarCamposTabla();
-                    System.out.println(resultado);
+                    pasarExcelAMatriz();
+                    buscarCamposEnTabla();
+                    generarMails();
+                    //System.out.println(resultado);
                     return;
                 }
                 switch(tokens){
@@ -102,7 +145,7 @@ public class Taller {
                         //System.out.println(lexer.lexeme);
                         String campo = lexer.lexeme.replaceAll("<|>", "");
                         Campos.add(campo);
-                        resultado += "Campo: "+ lexer.lexeme+ " Encontrado\n";
+                        //resultado += "Campo: "+ lexer.lexeme+ " Encontrado\n";
                         //resultado += lexer.lexeme +": Es un "+ tokens + "\n";
                         break;
                     default:
