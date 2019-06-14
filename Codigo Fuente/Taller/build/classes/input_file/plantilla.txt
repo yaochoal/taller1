@@ -1,0 +1,9 @@
+Señor
+
+
+<<Nombre>> <<Apellido>> EDAD <<Edad>>
+
+
+La herramienta (de desarrollarse como comando) puede lucir de la siguiente manera:
+
+
