@@ -93,10 +93,16 @@ public class Taller {
             }
         }
     }
+    public static boolean verificarCampos(int j){
+        boolean campos =true;
+        for (int i = 0; i < Columnas.size(); i++) {
+            campos=campos&&(Matriz[Columnas.get(i).columna][Columnas.get(i).fila+j] != null);      
+        }
+        return campos;
+    }
     
     public static void generarMails() throws IOException{
-       
-       for (int i = 1; Matriz[Columnas.get(0).columna][Columnas.get(0).fila+i] != null; i++) {
+       for (int i = 1; verificarCampos(i) ; i++) {
        File original = new File("src/input_file/plantilla.txt");
        File copiado = new File("src/output_file/"+i+".txt");
        FileWriter archivoEscribir = new FileWriter(copiado);
@@ -109,16 +115,13 @@ public class Taller {
                 for (int j = 0; j < Columnas.size(); j++) {
                     line=line.replaceAll(Columnas.get(j).nombre, Matriz[Columnas.get(j).columna][Columnas.get(j).fila+i]);
                 }
-                //System.out.println(line);
+                System.out.println(line);
                 bufferEscribir.write(line+"\n");
        }   
        
         bufferEscribir.close();
         bufferLeer.close(); 
        }
-      
-        
-        
     }
     
     
