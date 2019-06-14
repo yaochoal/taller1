@@ -28,7 +28,7 @@ Java 1.8 o superior.
 ## Desarrollo
 
 ### 1. Uso de JFlex:
-Se utililizo JFlex para el reconocimiento de los campos de la plantilla y a partir del Token definido Campo con la estructura <<Campo>> por ejemplo <<Nombre>> una vez almacenado en un Array de Campos se busca el campo en el excel.
+Se utililizo JFlex para el reconocimiento de los campos de la plantilla y a partir del Token definido Campo con la estructura << Campo >> por ejemplo << Nombre >> una vez almacenado en un Array de Campos se busca el campo en el excel.
 ### 2. Busqueda en el Excel:
 Se utilizo la libreria Apache POI para abrir un documento de Excel.xlsx del cual se busca en cada uno de las celdas los Campos identificados por el Analizador Lexico y sus respectivos datos.
 ### 3. Generación de documentos:
