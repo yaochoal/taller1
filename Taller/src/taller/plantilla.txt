@@ -1,0 +1,7 @@
+Señor
+
+<<Nombre>><<Apellido>>
+
+La herramienta (de desarrollarse como comando) puede lucir de la siguiente manera:
+
+
