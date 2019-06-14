@@ -1,3 +1,13 @@
+# Taller #01 ANÁLISIS LEXICO
+
+## Propósito
+
+Análisis, diseño e implementación de una herramienta (prototipo) de software que permita realizar combinación de correspondencia a partir de un archivo fuente de información y una plantilla o modelo de documento a generar. El archivo fuente es una tabla (por ejemplo, Excel) cuyas columnas son los campos.
+
+## Integrantes
+
+|       Integrante      |                 Correo                       |
+|-----------------------|-----------------------------------------------|
 | Adriano Ramón Hernández|  <aramonh@unal.edu.co> |
 | Liseth Yurany Arévalo Yaruro   |   <lyarevalo@unal.edu.co>  |
 | Luis Alejandro Higuarán Serrano      |    <lahiguarans@unal.edu.co>    |
