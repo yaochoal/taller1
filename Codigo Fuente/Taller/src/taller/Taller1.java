@@ -56,6 +56,7 @@ public class Taller1 extends javax.swing.JFrame {
         Campos = new ArrayList<>();
         Columnas = new ArrayList<>();
         Matriz = new String[tamaño][tamaño];
+        //Funcion que cuando se llama genera el Flex.java
         //generarLexer();
         FileReader fileReader = new FileReader(plantillaDireccion.getText());
         Reader lector = new BufferedReader( new FileReader(plantillaDireccion.getText()));
@@ -205,9 +206,8 @@ public class Taller1 extends javax.swing.JFrame {
                      }
                 }
                 int option = JOptionPane.showConfirmDialog(null, "El campo candidato para el token <<" + Campos.get(i).Nombre + ">> del excel es: " + Candidata
-                        +"\n¿Desea que este reemplaze al campo faltante?", "Mensaje", 
+                        +"\n¿Desea que este reemplace al campo faltante?", "Mensaje", 
                                 JOptionPane.YES_NO_OPTION);
-                System.out.println(option);
                 if(option == 0){
                     Matriz[IndiceJ][IndiceK]=Campos.get(i).Nombre;
                     Columna columna = new Columna(Campos.get(i).Nombre,IndiceJ,IndiceK);
